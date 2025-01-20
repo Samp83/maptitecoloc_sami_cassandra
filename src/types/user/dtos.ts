@@ -24,3 +24,4 @@ export class UserToCreateDTO {
   @IsBoolean()
   is18: boolean;
 }
+
