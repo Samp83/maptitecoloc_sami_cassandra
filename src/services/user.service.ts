@@ -1,14 +1,16 @@
 import { UserEntity } from "../databases/mysql/user.entity";
 import { UserRepository } from "../repositories/user.repository";
+import { UserPasswordEntity } from "../databases/mysql/user.password.entity";
 import { UserToCreateDTO } from "../types/user/dtos";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { CONFIG } from "../configs/constants";
 import { UserPresenter } from "../types/user/presenters";
-import { userToCreateInput } from "../types/user/Inputs";
+import { connectMySQLDB } from "../configs/databases/mysql.config";
 
 export class UserService {
   private userRepository = new UserRepository();
+  private passwordRepository = connectMySQLDB.getRepository(UserPasswordEntity);
 
   async registerUser(userToCreate: UserToCreateDTO): Promise<UserEntity> {
     // ON CHECK SI L'UTILISATEUR EXISTE DÉJÀ DANS LE REPOSITORY
@@ -22,14 +24,20 @@ export class UserService {
       lastname: userToCreate.lastname,
       email: userToCreate.email,
       is18: userToCreate.is18,
-      password_hash,
-      isAdmin: userToCreate.isAdmin, // Add this line
+      isAdmin: userToCreate.isAdmin,
     });
 
     // ON SAUVEGARDE L'UTILISATEUR
     const savedUser = await this.userRepository.save(createdUser);
 
-    // APPELER LE EMAIL SERVICE POUR ENVOYER UNE NOTIFICATION DE CREATION DE COMPTE A L'UTILISATEUR NOUVELLEMENT CRÉÉ
+    // ON CRÉE L'ENTITÉ DE MOT DE PASSE
+    const userPassword = this.passwordRepository.create({
+      password_hash,
+      user: savedUser,
+    });
+
+    // ON SAUVEGARDE L'ENTITÉ DE MOT DE PASSE
+    await this.passwordRepository.save(userPassword);
 
     // ON RETOURNE L'UTILISATEUR CRÉÉ
     return savedUser;
@@ -41,7 +49,12 @@ export class UserService {
       throw new Error("Invalid email or password");
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+    const userPassword = await this.passwordRepository.findOne({ where: { user } });
+    if (!userPassword) {
+      throw new Error("Invalid email or password");
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, userPassword.password_hash);
     if (!isPasswordValid) {
       throw new Error("Invalid email or password");
     }
@@ -67,7 +80,7 @@ export class UserService {
       email: user.email,
       is18: user.is18,
       isActive: user.isActive,
-      isAdmin: user.isAdmin, 
+      isAdmin: user.isAdmin,
     };
   }
 
@@ -77,7 +90,7 @@ export class UserService {
 
   async updateUser(
     id: number,
-    updatedData: Partial<userToCreateInput>
+    updatedData: Partial<UserToCreateDTO>
   ): Promise<void> {
     const update = await this.userRepository.update(id, updatedData);
     if (update === null) {
@@ -90,4 +103,3 @@ export class UserService {
     return await this.userRepository.delete(id);
   }
 }
-

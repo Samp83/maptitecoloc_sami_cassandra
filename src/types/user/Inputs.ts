@@ -16,14 +16,10 @@ export class userToCreateInput {
   email: UserEntity['email'];
 
   @Expose()
-  @IsString()
-  password_hash: UserEntity['password_hash'];
+  @IsBoolean()
+  is18: UserEntity['is18'];
 
   @Expose()
   @IsBoolean()
-  is18: boolean;
-
-  @Expose()
-  @IsBoolean()
-  isAdmin: UserEntity['isAdmin']; // Add this line
+  isAdmin: UserEntity['isAdmin'];
 }

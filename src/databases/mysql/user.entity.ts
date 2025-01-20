@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from "typeorm";
+import { UserPasswordEntity } from "./user.password.entity";
 
 @Entity("users")
 export class UserEntity {
@@ -17,12 +18,12 @@ export class UserEntity {
   @Column({ default: false })
   is18: boolean;
 
-  @Column()
-  password_hash: string; // grosse faille de sécurité -> à ne pas faire en prod -> A mettre dans une autre table avec une relation
-
-  @Column('boolean', {default: true})
+  @Column('boolean', { default: true })
   isActive: boolean = true;
 
   @Column({ default: false })
-  isAdmin: boolean; // Add this line
+  isAdmin: boolean;
+
+  @OneToOne(() => UserPasswordEntity, password => password.user)
+  password: UserPasswordEntity;
 }

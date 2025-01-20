@@ -20,15 +20,15 @@ export class UserRepository {
   }
 
   async findById(id: number): Promise<UserEntity | null> {
-    return this.userDB.findOneBy({ id });
+    return this.userDB.findOne({ where: { id }, relations: ["password"] });
   }
 
   async findByEmail(email: string): Promise<UserEntity | null> {
-    return this.userDB.findOneBy({ email });
+    return this.userDB.findOne({ where: { email }, relations: ["password"] });
   }
 
   async findAll(): Promise<UserEntity[]> {
-    return this.userDB.find();
+    return this.userDB.find({ relations: ["password"] });
   }
 
   async update(
@@ -36,7 +36,7 @@ export class UserRepository {
     updatedData: Partial<userToCreateInput>
   ): Promise<UserEntity | null> {
     await this.userDB.update(id, updatedData);
-    return this.userDB.findOneBy({ id });
+    return this.userDB.findOne({ where: { id }, relations: ["password"] });
   }
 
   async delete(id: number): Promise<void> {
