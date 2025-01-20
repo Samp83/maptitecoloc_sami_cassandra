@@ -21,8 +21,6 @@ export class UserService {
     // ON SAUVEGARDE L'UTILISATEUR
     const savedUser = await this.userRepository.save(createdUser);
 
-    // APPELER LE EMAIL SERVICE POUR ENVOYER UNE NOTIFICATION DE CREATION DE COMPTE A L'UTILISATEUR NOUVELLEMENT CRÉÉ
-
     // ON RETOURNE L'UTILISATEUR CRÉÉ
     return savedUser;
   }
