@@ -32,7 +32,7 @@ export const registerUser = async (
     });
     res.status(201).json(createdUser); // à vous de créer une class pour gérer les success
   } catch (error) {
-    throw error;
+    res.status(400).json({ message: (error as Error).message });
   }
 };
 
@@ -108,11 +108,21 @@ export const deleteUser = async (
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
-    const { accessToken, refreshToken } = await userService.loginUser(
-      email,
-      password
-    );
+    const { accessToken, refreshToken } = await userService.loginUser(email, password);
     res.status(200).json({ accessToken, refreshToken });
+  } catch (error) {
+    res.status(400).json({ message: (error as Error).message });
+  }
+};
+
+export const getUserProfile = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = (req as any).user.id;
+    const user = await userService.getUserById(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    res.status(200).json(user);
   } catch (error) {
     res.status(400).json({ message: (error as Error).message });
   }

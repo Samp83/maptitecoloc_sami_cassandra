@@ -22,4 +22,7 @@ export class UserEntity {
 
   @Column('boolean', {default: true})
   isActive: boolean = true;
+
+  @Column({ default: false })
+  isAdmin: boolean; // Add this line
 }

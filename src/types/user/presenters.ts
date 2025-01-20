@@ -29,6 +29,11 @@ export class UserPresenter {
   @IsBoolean()
   is18: UserEntity["is18"];
 
+  @Expose()
   @IsBoolean()
   isActive: UserEntity["isActive"];
+
+  @Expose()
+  @IsBoolean()
+  isAdmin: UserEntity["isAdmin"]; // Add this line
 }

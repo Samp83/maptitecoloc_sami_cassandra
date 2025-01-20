@@ -18,8 +18,12 @@ export class UserService {
 
     // ON CRÉE L'UTILISATEUR
     const createdUser = this.userRepository.create({
-      ...userToCreate,
+      firstname: userToCreate.firstname,
+      lastname: userToCreate.lastname,
+      email: userToCreate.email,
+      is18: userToCreate.is18,
       password_hash,
+      isAdmin: userToCreate.isAdmin, // Add this line
     });
 
     // ON SAUVEGARDE L'UTILISATEUR
@@ -42,11 +46,11 @@ export class UserService {
       throw new Error("Invalid email or password");
     }
 
-    const accessToken = jwt.sign({ id: user.id, email: user.email }, CONFIG.JWT_SECRET, {
+    const accessToken = jwt.sign({ id: user.id, email: user.email, isAdmin: user.isAdmin }, CONFIG.JWT_SECRET, {
       expiresIn: "1h",
     });
 
-    const refreshToken = jwt.sign({ id: user.id, email: user.email }, CONFIG.JWT_REFRESH_SECRET, {
+    const refreshToken = jwt.sign({ id: user.id, email: user.email, isAdmin: user.isAdmin }, CONFIG.JWT_REFRESH_SECRET, {
       expiresIn: "7d",
     });
 
@@ -63,6 +67,7 @@ export class UserService {
       email: user.email,
       is18: user.is18,
       isActive: user.isActive,
+      isAdmin: user.isAdmin, 
     };
   }
 
@@ -85,3 +90,4 @@ export class UserService {
     return await this.userRepository.delete(id);
   }
 }
+
