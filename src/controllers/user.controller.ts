@@ -24,7 +24,7 @@ export const registerUser = async (
       throw new Error("Invalid fields");
     }
 
-    const user = await userService.registerUser(req.body);
+    const user = await userService.registerUser(userToCreateDTO);
     // appeler le logger service pour enregistrer QUI a créer un utilisateur (peut être un admin ou l'utilisateur lui même (?)  )
 
     const createdUser = plainToInstance(UserPresenter, user, {
@@ -102,5 +102,18 @@ export const deleteUser = async (
     } else {
       res.status(500).json({ error: "An unknown error occurred" });
     }
+  }
+};
+
+export const loginUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email, password } = req.body;
+    const { accessToken, refreshToken } = await userService.loginUser(
+      email,
+      password
+    );
+    res.status(200).json({ accessToken, refreshToken });
+  } catch (error) {
+    res.status(400).json({ message: (error as Error).message });
   }
 };

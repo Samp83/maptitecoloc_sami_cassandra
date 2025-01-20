@@ -2,6 +2,7 @@ import { ColocEntity } from "../databases/mysql/coloc.entity";
 import { ColocRepository } from "../repositories/coloc.repository";
 import { ColocDTO } from "../types/coloc/dtos";
 
+
 export class ColocService {
   private colocRepository = new ColocRepository();
 
