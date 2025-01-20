@@ -2,6 +2,8 @@ import { UserEntity } from "../databases/mysql/user.entity";
 import { UserRepository } from "../repositories/user.repository";
 import { UserToCreateDTO } from "../types/user/dtos";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { CONFIG } from "../configs/constants";
 import { UserPresenter } from "../types/user/presenters";
 import { userToCreateInput } from "../types/user/Inputs";
 
@@ -27,6 +29,28 @@ export class UserService {
 
     // ON RETOURNE L'UTILISATEUR CRÉÉ
     return savedUser;
+  }
+
+  async loginUser(email: string, password: string): Promise<{ accessToken: string, refreshToken: string }> {
+    const user = await this.userRepository.findByEmail(email);
+    if (!user) {
+      throw new Error("Invalid email or password");
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+    if (!isPasswordValid) {
+      throw new Error("Invalid email or password");
+    }
+
+    const accessToken = jwt.sign({ id: user.id, email: user.email }, CONFIG.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    const refreshToken = jwt.sign({ id: user.id, email: user.email }, CONFIG.JWT_REFRESH_SECRET, {
+      expiresIn: "7d",
+    });
+
+    return { accessToken, refreshToken };
   }
 
   async getUserById(id: number): Promise<UserPresenter | null> {

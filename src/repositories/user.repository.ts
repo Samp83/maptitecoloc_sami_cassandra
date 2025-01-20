@@ -23,6 +23,10 @@ export class UserRepository {
     return this.userDB.findOneBy({ id });
   }
 
+  async findByEmail(email: string): Promise<UserEntity | null> {
+    return this.userDB.findOneBy({ email });
+  }
+
   async findAll(): Promise<UserEntity[]> {
     return this.userDB.find();
   }
