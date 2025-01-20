@@ -17,8 +17,8 @@ export class UserPresenter {
  
    @Expose()
    @IsBoolean()
-   is18: boolean;
+   is18: UserEntity['is18'];
   
    @IsBoolean()
-   isActive: boolean;
+   isActive: UserEntity['isActive'];
 }

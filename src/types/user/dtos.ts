@@ -18,10 +18,10 @@ export class UserToCreateDTO {
   @Expose()
   @IsString()
   @MinLength(6)
-  password: string;
+  password: UserEntity['password_hash'];
 
   @Expose()
   @IsBoolean()
-  is18: boolean;
+  is18: UserEntity['is18'];
 }
 
