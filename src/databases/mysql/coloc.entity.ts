@@ -14,13 +14,13 @@ export class ColocEntity {
   @Column({ length: 50 })
   addresse: string;
 
-  @Column({ length: 50 })
+  @Column({  })
   surface: number;
 
-  @Column({ length: 50 })  
+  @Column({  })  
   nb_de_piece: number;
 
-  @Column({ length: 50 })
+  @Column({ })
   loyer: number;
 
 }
