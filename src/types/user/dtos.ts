@@ -22,5 +22,4 @@ export class UserToCreateDTO {
 
   @Expose()
   @IsBoolean()
-  is18: boolean; // Ensure this line is correct
-}
+  is18: boolean;}

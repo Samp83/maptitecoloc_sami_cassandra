@@ -17,7 +17,7 @@ export class ColocEntity {
   @Column({  })
   surface: number;
 
-  @Column({  })  
+  @Column()  
   nb_de_piece: number;
 
   @Column({ })
