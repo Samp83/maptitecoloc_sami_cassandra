@@ -1,6 +1,6 @@
 import { Expose } from "class-transformer";
-import { UserEntity } from "../../databases/mysql/user.entity";
 import { IsString, IsEmail, IsBoolean, MinLength } from "class-validator";
+import { UserEntity } from "../../databases/mysql/user.entity";
 
 export class UserToCreateDTO {
   @Expose()
@@ -18,10 +18,9 @@ export class UserToCreateDTO {
   @Expose()
   @IsString()
   @MinLength(6)
-  password: UserEntity['password_hash'];
+  password: string;
 
   @Expose()
   @IsBoolean()
-  is18: UserEntity['is18'];
+  is18: boolean; // Ensure this line is correct
 }
-
