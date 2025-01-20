@@ -11,6 +11,8 @@ export class UserService {
 
     // ON HASH LE MOT DE PASSE
     const password_hash = await bcrypt.hash(userToCreate.password, 10);
+    
+    
 
     // ON CRÉE L'UTILISATEUR
     const createdUser = this.userRepository.create({
@@ -20,6 +22,8 @@ export class UserService {
 
     // ON SAUVEGARDE L'UTILISATEUR
     const savedUser = await this.userRepository.save(createdUser);
+
+    // APPELER LE EMAIL SERVICE POUR ENVOYER UNE NOTIFICATION DE CREATION DE COMPTE A L'UTILISATEUR NOUVELLEMENT CRÉÉ
 
     // ON RETOURNE L'UTILISATEUR CRÉÉ
     return savedUser;

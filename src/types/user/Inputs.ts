@@ -9,11 +9,11 @@ export class userToCreateInput {
 
   @Expose()
   @IsString()
-  lastname: string;
+  lastname: UserEntity['lastname'];
 
   @Expose()
   @IsEmail()
-  email: string;
+  email: UserEntity['email'];
 
   @Expose()
   @IsString()
