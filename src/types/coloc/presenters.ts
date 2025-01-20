@@ -9,25 +9,25 @@ export class ColocPresenter {
 
     @Expose()
     @IsString()
-    proprietaire: string;
+    proprietaire: ColocEntity['proprietaire'];
 
     @Expose()
     @IsString()
-    admin_coloc: string;
+    admin_coloc: ColocEntity['admin_coloc'];
 
     @Expose()
     @IsString()
-    addresse: string;
+    addresse: ColocEntity['addresse'];
 
     @Expose()
     @IsNumber()
-    surface: number;
+    surface: ColocEntity['surface'];
 
     @Expose()
     @IsNumber()
-    nb_de_piece: number;
+    nb_de_piece: ColocEntity['nb_de_piece'];
 
     @Expose()
     @IsNumber()
-    loyer: number;
+    loyer: ColocEntity['loyer'];
 }
