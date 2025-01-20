@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import userRoutes from "./routes/user/user.routes";
+import colocRoutes from "./routes/coloc/coloc.routes";
 
 const app = express();
 
@@ -15,7 +16,8 @@ app.get("/", (req, res) => {
   throw new Error("Il n'y a rien d'implémenté dans cette route, à vous de jouer !");
 });
 
-app.use("/api/users", userRoutes); // Routes pour les utilisateurs
+app.use("/api/users", userRoutes);// Routes pour les utilisateurs
+app.use("/api/colocs", colocRoutes); // Routes pour les colocations
 
 // Middleware de gestion des erreurs (à vous de le personnaliser pour qu'il soit réutilisable, pensez aux classes d'erreurs)
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
