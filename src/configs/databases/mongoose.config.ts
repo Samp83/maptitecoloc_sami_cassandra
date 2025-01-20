@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+/*import mongoose from "mongoose";
 
 export const connectMongooseDB = async () => {
   try {
@@ -11,4 +11,4 @@ export const connectMongooseDB = async () => {
     console.error("Failed to connect to MongoDB", error);
     process.exit(1); // Arrête le processus en cas d'échec critique
   }
-};
+};*/
