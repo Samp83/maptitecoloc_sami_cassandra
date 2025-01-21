@@ -31,10 +31,14 @@ export class ColocService {
     return savedColoc;
   }
 
-  async addMember(colocId: number, userId: number): Promise<ColocMembershipEntity> {
+  async addMember(colocId: number, userId: number, ownerId: number): Promise<ColocMembershipEntity> {
     const coloc = await this.colocRepository.findById(colocId);
     if (!coloc) {
       throw new Error("Coloc not found");
+    }
+
+    if (!coloc.proprietaire || coloc.proprietaire.id !== ownerId) {
+      throw new Error("Only the owner can add members");
     }
 
     const user = await this.userRepository.findById(userId);
@@ -50,7 +54,16 @@ export class ColocService {
     return await this.membershipRepository.save(membership);
   }
 
-  async removeMember(colocId: number, userId: number): Promise<void> {
+  async removeMember(colocId: number, userId: number, ownerId: number): Promise<void> {
+    const coloc = await this.colocRepository.findById(colocId);
+    if (!coloc) {
+      throw new Error("Coloc not found");
+    }
+
+    if (!coloc.proprietaire || coloc.proprietaire.id !== ownerId) {
+      throw new Error("Only the owner can remove members");
+    }
+
     const membership = await this.membershipRepository.findOne({ where: { coloc: { id: colocId }, user: { id: userId } } });
     if (!membership) {
       throw new Error("Membership not found");
@@ -65,7 +78,7 @@ export class ColocService {
       throw new Error("Coloc not found");
     }
 
-    if (coloc.proprietaire.id !== ownerId) {
+    if (!coloc.proprietaire || coloc.proprietaire.id !== ownerId) {
       throw new Error("Only the owner can delete the coloc");
     }
 

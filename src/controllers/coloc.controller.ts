@@ -39,12 +39,15 @@ export const addMember = async (
   res: Response
 ): Promise<void> => {
   try {
+    const userId = (req as any).user.id;
     const colocId = Number(req.params.id);
-    const userId = Number(req.body.userId);
-    const membership = await colocService.addMember(colocId, userId);
+    const memberId = Number(req.body.userId);
+    const membership = await colocService.addMember(colocId, memberId, userId);
     res.status(201).json(SuccessHandler.success("Member added successfully", membership, 201));
   } catch (error) {
-    throw error;
+    {
+      res.status(500).json({ error: "Only the owner can modify members of a coloc" });
+    }
   }
 };
 
@@ -53,12 +56,13 @@ export const removeMember = async (
   res: Response
 ): Promise<void> => {
   try {
+    const userId = (req as any).user.id;
     const colocId = Number(req.params.id);
-    const userId = Number(req.body.userId);
-    await colocService.removeMember(colocId, userId);
+    const memberId = Number(req.body.userId);
+    await colocService.removeMember(colocId, memberId, userId);
     res.status(204).json(SuccessHandler.success("Member removed successfully", null, 204));
   } catch (error) {
-    throw error;
+    res.status(500).json({ error: "Only the owner can modify members of a coloc" });
   }
 };
 
