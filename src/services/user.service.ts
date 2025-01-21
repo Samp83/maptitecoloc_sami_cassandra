@@ -1,6 +1,8 @@
 import { UserEntity } from "../databases/mysql/user.entity";
 import { UserRepository } from "../repositories/user.repository";
 import { UserPasswordEntity } from "../databases/mysql/user.password.entity";
+import { ColocMembershipEntity } from "../databases/mysql/coloc.membership.entity";
+import { FinanceEntity } from "../databases/mysql/finance.entity";
 import { UserToCreateDTO } from "../types/user/dtos";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -11,6 +13,8 @@ import { connectMySQLDB } from "../configs/databases/mysql.config";
 export class UserService {
   private userRepository = new UserRepository();
   private passwordRepository = connectMySQLDB.getRepository(UserPasswordEntity);
+  private membershipRepository = connectMySQLDB.getRepository(ColocMembershipEntity);
+  private financeRepository = connectMySQLDB.getRepository(FinanceEntity);
 
   async registerUser(userToCreate: UserToCreateDTO): Promise<UserEntity> {
     // ON CHECK SI L'UTILISATEUR EXISTE DÉJÀ DANS LE REPOSITORY
@@ -100,6 +104,12 @@ export class UserService {
   }
 
   async deleteUser(id: number): Promise<void> {
-    return await this.userRepository.delete(id);
+    // Supprimer les enregistrements associés dans les autres tables
+    await this.membershipRepository.delete({ user: { id } });
+    await this.financeRepository.delete({ user: { id } });
+    await this.passwordRepository.delete({ user: { id } });
+
+    // Supprimer l'utilisateur
+    await this.userRepository.delete(id);
   }
 }

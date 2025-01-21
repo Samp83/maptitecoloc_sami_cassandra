@@ -47,3 +47,21 @@ export const removeCharge = async (
     }
   }
 };
+
+export const payMember = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const financeId = Number(req.params.id);
+    const montant = Number(req.body.montant);
+    await financeService.payMember(financeId, montant);
+    res.status(200).json(("Payment made successfully"));
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: "An unknown error occurred" });
+    }
+  }
+};

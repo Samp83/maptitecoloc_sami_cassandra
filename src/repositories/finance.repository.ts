@@ -26,4 +26,10 @@ export class FinanceRepository {
   async delete(id: number): Promise<void> {
     this.financeDB.delete(id);
   }
+
+  async payMember(financeId: number, montant: number): Promise<void> {
+    const finance = await this.findById(financeId);
+
+    console.log(`Payment done`);
+  }
 }

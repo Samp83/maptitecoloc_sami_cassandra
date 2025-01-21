@@ -50,4 +50,8 @@ export class FinanceService {
 
     await this.financeRepository.delete(financeId);
   }
+
+  async payMember(financeId: number, montant: number): Promise<void> {
+    await this.financeRepository.payMember(financeId, montant);
+  }
 }
