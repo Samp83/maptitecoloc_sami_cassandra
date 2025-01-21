@@ -13,50 +13,72 @@ export const registerColoc = async (
   res: Response
 ): Promise<void> => {
   try {
-    // Transform ColocDTO from request body
+    const userId = (req as any).user.id;
     const colocDTO = plainToInstance(ColocDTO, req.body, {
       excludeExtraneousValues: true,
     });
 
-    // Validate the DTO
     const dtoErrors = await validate(colocDTO);
     if (dtoErrors.length > 0) {
       console.log(dtoErrors);
       throw new Error("Invalid fields");
     }
 
-    const coloc = await colocService.registerColoc(colocDTO); // Use colocDTO
-    // Call the logger service to record who created the coloc (could be an admin or the user themselves)
-
+    const coloc = await colocService.registerColoc(colocDTO, userId);
     const createdColoc = plainToInstance(ColocPresenter, coloc, {
       excludeExtraneousValues: true,
     });
-    res
-      .status(201)
-      .json(
-        SuccessHandler.success(
-          "User registered successfully",
-          createdColoc,
-          201
-        )
-      );
+    res.status(201).json(SuccessHandler.success("Coloc registered successfully", createdColoc, 201));
   } catch (error) {
     throw error;
   }
 };
 
-  export const deleteColoc = async (
-    req: Request,
-    res: Response
-  ): Promise<void> => {
-    try {
-      await colocService.deleteColoc(Number(req.params.id));
-      res.status(204).json({ message: "Coloc deleted successfully" });
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(500).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: "An unknown error occurred" });
-      }
+export const addMember = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const userId = (req as any).user.id;
+    const colocId = Number(req.params.id);
+    const memberId = Number(req.body.userId);
+    const membership = await colocService.addMember(colocId, memberId, userId);
+    res.status(201).json(SuccessHandler.success("Member added successfully", membership, 201));
+  } catch (error) {
+    {
+      res.status(500).json({ error: "Only the owner can modify members of a coloc" });
     }
-  };
+  }
+};
+
+export const removeMember = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const userId = (req as any).user.id;
+    const colocId = Number(req.params.id);
+    const memberId = Number(req.body.userId);
+    await colocService.removeMember(colocId, memberId, userId);
+    res.status(204).json(SuccessHandler.success("Member removed successfully", null, 204));
+  } catch (error) {
+    res.status(500).json({ error: "Only the owner can modify members of a coloc" });
+  }
+};
+
+export const deleteColoc = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const userId = (req as any).user.id;
+    await colocService.deleteColoc(Number(req.params.id), userId);
+    res.status(204).json(SuccessHandler.success("Coloc deleted successfully", null, 204));
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: "An unknown error occurred" });
+    }
+  }
+};

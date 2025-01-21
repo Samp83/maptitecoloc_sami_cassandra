@@ -20,7 +20,7 @@ export class ColocRepository {
   }
 
   async findById(id: number): Promise<ColocEntity | null> {
-    return this.colocDB.findOneBy({ id });
+    return this.colocDB.findOne({ where: { id }, relations: ["proprietaire"] });
   }
 
   async findAll(): Promise<ColocEntity[]> {
@@ -32,7 +32,7 @@ export class ColocRepository {
     updatedData: Partial<ColocInputs>
   ): Promise<ColocEntity | null> {
     await this.colocDB.update(id, updatedData);
-    return this.colocDB.findOneBy({ id });
+    return this.colocDB.findOne({ where: { id }, relations: ["proprietaire"] });
   }
 
   async delete(id: number): Promise<void> {
