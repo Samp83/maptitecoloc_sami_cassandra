@@ -23,4 +23,8 @@ export class ColocService {
     // Return the created coloc
     return savedColoc;
   }
+
+  async deleteColoc(id: number): Promise<void> {
+    return await this.colocRepository.delete(id);
+  }
 }

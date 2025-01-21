@@ -6,6 +6,7 @@ const routes = Router();
 
 // Route pour l'inscription d'un coloc, requiert un token d'authentification
 routes.post("/register", authMiddleware, colocController.registerColoc);
+routes.delete("/:id", colocController.deleteColoc);
 
 
 
