@@ -5,8 +5,10 @@ import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import { UserPresenter } from "../types/user/presenters";
 import { SuccessHandler } from "../utils/success.handler";
+import { LogHandler } from "../utils/log.handler";
 
 const userService = new UserService();
+const logHandler = new LogHandler();
 
 export const registerUser = async (
   req: Request,
@@ -26,7 +28,7 @@ export const registerUser = async (
     }
 
     const user = await userService.registerUser(userToCreateDTO);
-    // appeler le logger service pour enregistrer QUI a créer un utilisateur (peut être un admin ou l'utilisateur lui même (?)  )
+    const log = await LogHandler.logAction("CREATE_USER", user.id.toString());
 
     const createdUser = plainToInstance(UserPresenter, user, {
       excludeExtraneousValues: true,
@@ -36,6 +38,7 @@ export const registerUser = async (
       .json(
         SuccessHandler.success("User registered successfully", createdUser, 201)
       );
+    console.log(log);
   } catch (error) {
     throw error;
   }
@@ -68,7 +71,6 @@ export const getUserById = async (
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const userService = new UserService();
     const users = await userService.getAllUsers();
     res
       .status(200)
@@ -87,6 +89,11 @@ export const updateUser = async (
   res: Response
 ): Promise<void> => {
   try {
+    const userId = Number(req.params.id);
+    if (isNaN(userId)) {
+      throw new Error("Invalid user ID");
+    }
+
     const user = await userService.updateUser(Number(req.params.id), req.body);
     res
       .status(200)
@@ -105,6 +112,11 @@ export const deleteUser = async (
   res: Response
 ): Promise<void> => {
   try {
+    const userId = Number(req.params.id);
+    if (isNaN(userId)) {
+      throw new Error("Invalid user ID");
+    }
+
     await userService.deleteUser(Number(req.params.id));
     res
       .status(204)
@@ -125,14 +137,12 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       email,
       password
     );
-    res
-      .status(200)
-      .json(
-        SuccessHandler.success("Login successful", {
-          accessToken,
-          refreshToken,
-        })
-      );
+    res.status(200).json(
+      SuccessHandler.success("Login successful", {
+        accessToken,
+        refreshToken,
+      })
+    );
   } catch (error) {
     if (error instanceof Error) {
       res.status(400).json({ error: error.message });
@@ -148,6 +158,10 @@ export const getUserProfile = async (
 ): Promise<void> => {
   try {
     const userId = (req as any).user.id;
+    if (!userId) {
+      throw new Error("User ID not found in request");
+    }
+
     const user = await userService.getUserById(userId);
     if (!user) {
       throw new Error("User not found");
