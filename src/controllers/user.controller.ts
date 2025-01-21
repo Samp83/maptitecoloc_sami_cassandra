@@ -4,6 +4,7 @@ import { UserToCreateDTO } from "../types/user/dtos";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import { UserPresenter } from "../types/user/presenters";
+import { SuccessHandler } from "../utils/success.handler";
 
 const userService = new UserService();
 
@@ -30,9 +31,13 @@ export const registerUser = async (
     const createdUser = plainToInstance(UserPresenter, user, {
       excludeExtraneousValues: true,
     });
-    res.status(201).json(createdUser); // à vous de créer une class pour gérer les success
+    res
+      .status(201)
+      .json(
+        SuccessHandler.success("User registered successfully", createdUser, 201)
+      );
   } catch (error) {
-    res.status(400).json({ message: (error as Error).message });
+    throw error;
   }
 };
 
@@ -49,7 +54,9 @@ export const getUserById = async (
     if (!user) {
       throw new Error("User not found");
     }
-    res.status(200).json(user);
+    res
+      .status(200)
+      .json(SuccessHandler.success("User retrieved successfully", user));
   } catch (error) {
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });
@@ -63,7 +70,9 @@ export const getAllUsers = async (req: Request, res: Response) => {
   try {
     const userService = new UserService();
     const users = await userService.getAllUsers();
-    res.status(200).json(users);
+    res
+      .status(200)
+      .json(SuccessHandler.success("Users fetched successfully", users));
   } catch (error) {
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });
@@ -79,7 +88,9 @@ export const updateUser = async (
 ): Promise<void> => {
   try {
     const user = await userService.updateUser(Number(req.params.id), req.body);
-    res.status(200).json(user);
+    res
+      .status(200)
+      .json(SuccessHandler.success("User updated successfully", user));
   } catch (error) {
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });
@@ -95,7 +106,9 @@ export const deleteUser = async (
 ): Promise<void> => {
   try {
     await userService.deleteUser(Number(req.params.id));
-    res.status(204).json({ message: "User deleted successfully" });
+    res
+      .status(204)
+      .json(SuccessHandler.success("User deleted successfully", null, 204));
   } catch (error) {
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });
@@ -108,8 +121,18 @@ export const deleteUser = async (
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
-    const { accessToken, refreshToken } = await userService.loginUser(email, password);
-    res.status(200).json({ accessToken, refreshToken });
+    const { accessToken, refreshToken } = await userService.loginUser(
+      email,
+      password
+    );
+    res
+      .status(200)
+      .json(
+        SuccessHandler.success("Login successful", {
+          accessToken,
+          refreshToken,
+        })
+      );
   } catch (error) {
     if (error instanceof Error) {
       res.status(400).json({ error: error.message });
@@ -119,15 +142,26 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export const getUserProfile = async (req: Request, res: Response): Promise<void> => {
+export const getUserProfile = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const userId = (req as any).user.id;
     const user = await userService.getUserById(userId);
     if (!user) {
       throw new Error("User not found");
     }
-    res.status(200).json(user);
+    res
+      .status(200)
+      .json(
+        SuccessHandler.success("User profile retrieved successfully", user)
+      );
   } catch (error) {
-    res.status(400).json({ message: (error as Error).message });
+    if (error instanceof Error) {
+      res.status(400).json({ error: error.message });
+    } else {
+      res.status(400).json({ error: "An unknown error occurred" });
+    }
   }
 };

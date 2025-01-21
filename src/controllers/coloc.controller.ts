@@ -4,6 +4,7 @@ import { ColocDTO } from "../types/coloc/dtos";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import { ColocPresenter } from "../types/coloc/presenters";
+import { SuccessHandler } from "../utils/success.handler";
 
 const colocService = new ColocService();
 
@@ -30,7 +31,15 @@ export const registerColoc = async (
     const createdColoc = plainToInstance(ColocPresenter, coloc, {
       excludeExtraneousValues: true,
     });
-    res.status(201).json(createdColoc); // Create a class to handle success responses
+    res
+      .status(201)
+      .json(
+        SuccessHandler.success(
+          "User registered successfully",
+          createdColoc,
+          201
+        )
+      );
   } catch (error) {
     throw error;
   }
