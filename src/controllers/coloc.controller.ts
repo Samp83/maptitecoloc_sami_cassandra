@@ -62,9 +62,7 @@ export const addMember = async (
     const membership = await colocService.addMember(colocId, memberId, userId);
     res.status(201).json(SuccessHandler.success("Member added successfully", membership, 201));
   } catch (error) {
-    {
-      res.status(500).json({ error: "Only the owner can modify members of a coloc" });
-    }
+    res.status(500).json({ error: "Only the owner can modify members of a coloc" });
   }
 };
 
@@ -91,6 +89,25 @@ export const deleteColoc = async (
     const userId = (req as any).user.id;
     await colocService.deleteColoc(Number(req.params.id), userId);
     res.status(204).json(SuccessHandler.success("Coloc deleted successfully", null, 204));
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: "An unknown error occurred" });
+    }
+  }
+};
+
+export const transferOwnership = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const userId = (req as any).user.id;
+    const colocId = Number(req.params.id);
+    const newOwnerId = Number(req.body.newOwnerId);
+    const updatedColoc = await colocService.transferOwnership(colocId, newOwnerId, userId);
+    res.status(200).json(SuccessHandler.success("Ownership transferred successfully", updatedColoc, 200));
   } catch (error) {
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });

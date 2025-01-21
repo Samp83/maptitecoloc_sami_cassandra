@@ -94,4 +94,23 @@ export class ColocService {
 
     await this.colocRepository.delete(id);
   }
+
+  async transferOwnership(colocId: number, newOwnerId: number, currentOwnerId: number): Promise<ColocEntity> {
+    const coloc = await this.colocRepository.findById(colocId);
+    if (!coloc) {
+      throw new Error("Coloc not found");
+    }
+
+    if (!coloc.proprietaire || coloc.proprietaire.id !== currentOwnerId) {
+      throw new Error("Only the current owner can transfer ownership");
+    }
+
+    const newOwner = await this.userRepository.findById(newOwnerId);
+    if (!newOwner) {
+      throw new Error("New owner not found");
+    }
+
+    coloc.proprietaire = newOwner;
+    return await this.colocRepository.save(coloc);
+  }
 }
