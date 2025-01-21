@@ -103,13 +103,11 @@ export class UserService {
     return;
   }
 
-  async deleteUser(id: number): Promise<void> {
-    // Supprimer les enregistrements associés dans les autres tables
+  async deleteUser(id: number): Promise<void> {   
     await this.membershipRepository.delete({ user: { id } });
     await this.financeRepository.delete({ user: { id } });
     await this.passwordRepository.delete({ user: { id } });
 
-    // Supprimer l'utilisateur
     await this.userRepository.delete(id);
   }
 }

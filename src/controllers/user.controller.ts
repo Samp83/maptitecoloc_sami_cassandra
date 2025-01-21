@@ -15,12 +15,12 @@ export const registerUser = async (
   res: Response
 ): Promise<void> => {
   try {
-    // transform userToCreateDTO en userToCreateInput (obj)
+    
     const userToCreateDTO = plainToInstance(UserToCreateDTO, req.body, {
       excludeExtraneousValues: true,
     });
 
-    //Controle des données
+    
     const dtoErrors = await validate(userToCreateDTO);
     if (dtoErrors.length > 0) {
       console.log(dtoErrors);

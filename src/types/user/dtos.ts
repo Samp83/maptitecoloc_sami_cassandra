@@ -26,5 +26,5 @@ export class UserToCreateDTO {
 
   @Expose()
   @IsBoolean()
-  isAdmin: boolean; // Add this line
+  isAdmin: boolean; 
 }
