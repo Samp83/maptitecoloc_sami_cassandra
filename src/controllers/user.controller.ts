@@ -114,6 +114,10 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
     );
     res.status(200).json({ accessToken, refreshToken });
   } catch (error) {
-    res.status(400).json({ message: (error as Error).message });
+    if (error instanceof Error) {
+      res.status(400).json({ error: error.message });
+    } else {
+      res.status(400).json({ error: "An unknown error occurred" });
+    }
   }
 };

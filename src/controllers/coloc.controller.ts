@@ -32,6 +32,6 @@ export const registerColoc = async (
     });
     res.status(201).json(createdColoc); // Create a class to handle success responses
   } catch (error) {
-    res.status(400).json({ message: (error as Error).message });
+    throw error;
   }
 };
