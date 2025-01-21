@@ -4,7 +4,6 @@ import {
   IsString,
   IsEmail,
   IsBoolean,
-  MinLength,
 } from "class-validator";
 import { UserEntity } from "../../databases/mysql/user.entity";
 
@@ -29,6 +28,11 @@ export class UserPresenter {
   @IsBoolean()
   is18: UserEntity["is18"];
 
+  @Expose()
   @IsBoolean()
   isActive: UserEntity["isActive"];
+
+  @Expose()
+  @IsBoolean()
+  isAdmin: UserEntity["isAdmin"];
 }

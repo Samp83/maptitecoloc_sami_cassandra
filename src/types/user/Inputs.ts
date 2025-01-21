@@ -1,5 +1,5 @@
 import { Expose } from "class-transformer";
-import { IsEmail, IsString } from "class-validator";
+import { IsEmail, IsString, IsBoolean } from "class-validator";
 import { UserEntity } from "../../databases/mysql/user.entity";
 
 export class userToCreateInput {
@@ -16,6 +16,10 @@ export class userToCreateInput {
   email: UserEntity['email'];
 
   @Expose()
-  @IsString()
-  password_hash: UserEntity['password_hash'];
+  @IsBoolean()
+  is18: UserEntity['is18'];
+
+  @Expose()
+  @IsBoolean()
+  isAdmin: UserEntity['isAdmin'];
 }
