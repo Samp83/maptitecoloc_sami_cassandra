@@ -20,7 +20,7 @@ const TaskSchema: Schema = new Schema({
       "ADD_MEMBER",
       "REMOVE_MEMBER",
       "UPDATE_COLOC",
-      "TRANSFER_COLOC",
+      "TRANSFER_OWNERSHIP",
     ],
   }, //voir si + finance
   assignedTo: { type: String, required: true },
