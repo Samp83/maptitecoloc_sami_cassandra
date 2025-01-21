@@ -8,7 +8,6 @@ import { SuccessHandler } from "../utils/success.handler";
 import { LogHandler } from "../utils/log.handler";
 
 const colocService = new ColocService();
-const logHandler = new LogHandler();
 
 export const registerColoc = async (
   req: Request,
@@ -27,11 +26,11 @@ export const registerColoc = async (
     }
 
     const coloc = await colocService.registerColoc(colocDTO, userId);
-    const log = await LogHandler.logAction("CREATE_COLOC", coloc.id.toString());
 
     const createdColoc = plainToInstance(ColocPresenter, coloc, {
       excludeExtraneousValues: true,
     });
+    await LogHandler.logAction("CREATE_COLOC", coloc.id.toString());
     res
       .status(201)
       .json(
@@ -41,7 +40,6 @@ export const registerColoc = async (
           201
         )
       );
-    console.log(log);
   } catch (error) {
     throw error;
   }

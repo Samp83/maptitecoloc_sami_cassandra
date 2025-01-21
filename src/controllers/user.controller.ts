@@ -8,7 +8,6 @@ import { SuccessHandler } from "../utils/success.handler";
 import { LogHandler } from "../utils/log.handler";
 
 const userService = new UserService();
-const logHandler = new LogHandler();
 
 export const registerUser = async (
   req: Request,
@@ -28,17 +27,16 @@ export const registerUser = async (
     }
 
     const user = await userService.registerUser(userToCreateDTO);
-    const log = await LogHandler.logAction("CREATE_USER", user.id.toString());
 
     const createdUser = plainToInstance(UserPresenter, user, {
       excludeExtraneousValues: true,
     });
+    await LogHandler.logAction("CREATE_USER", user.id.toString());
     res
       .status(201)
       .json(
         SuccessHandler.success("User registered successfully", createdUser, 201)
       );
-    console.log(log);
   } catch (error) {
     throw error;
   }
@@ -95,6 +93,7 @@ export const updateUser = async (
     }
 
     const user = await userService.updateUser(Number(req.params.id), req.body);
+    await LogHandler.logAction("UPDATE_USER", userId.toString());
     res
       .status(200)
       .json(SuccessHandler.success("User updated successfully", user));
@@ -118,6 +117,7 @@ export const deleteUser = async (
     }
 
     await userService.deleteUser(Number(req.params.id));
+    await LogHandler.logAction("DELETE_USER", userId.toString());
     res
       .status(204)
       .json(SuccessHandler.success("User deleted successfully", null, 204));
