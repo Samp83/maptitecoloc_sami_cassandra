@@ -4,7 +4,7 @@ import { authMiddleware } from '../../middleware/auth.middleware';
 
 const routes = Router();
 
-// Route pour l'inscription d'un coloc, requiert un token d'authentification
+
 routes.post("/register", authMiddleware, colocController.registerColoc);
 routes.delete("/:id", authMiddleware, colocController.deleteColoc);
 routes.post("/:id/add-member", authMiddleware, colocController.addMember);
