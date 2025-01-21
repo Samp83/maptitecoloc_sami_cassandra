@@ -1,22 +1,28 @@
+import { Expose } from "class-transformer";
 import { IsString, IsNumber } from "class-validator";
-import { ColocEntity } from "../../databases/mysql/coloc.entity";
+import { UserEntity } from "../../databases/mysql/user.entity";
 
 export class ColocInputs {
-    @IsString()
-    proprietaire: ColocEntity['proprietaire'];
+  @Expose()
+  @IsString()
+  admin_coloc: string;
 
-    @IsString()
-    admin_coloc: ColocEntity['admin_coloc'];
+  @Expose()
+  @IsString()
+  addresse: string;
 
-    @IsString()
-    addresse: ColocEntity['addresse'];
+  @Expose()
+  @IsNumber()
+  surface: number;
 
-    @IsNumber()
-    surface: ColocEntity['surface'];
+  @Expose()
+  @IsNumber()
+  nb_de_piece: number;
 
-    @IsNumber()
-    nb_de_piece: ColocEntity['nb_de_piece'];
+  @Expose()
+  @IsNumber()
+  loyer: number;
 
-    @IsNumber()
-    loyer: ColocEntity['loyer'];
+  @Expose()
+  proprietaire: UserEntity; 
 }

@@ -1,5 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany } from "typeorm";
 import { UserPasswordEntity } from "./user.password.entity";
+import { ColocEntity } from "./coloc.entity";
+import { ColocMembershipEntity } from "./coloc.membership.entity";
 
 @Entity("users")
 export class UserEntity {
@@ -26,4 +28,10 @@ export class UserEntity {
 
   @OneToOne(() => UserPasswordEntity, password => password.user)
   password: UserPasswordEntity;
+
+  @OneToMany(() => ColocEntity, coloc => coloc.proprietaire)
+  colocs: ColocEntity[];
+
+  @OneToMany(() => ColocMembershipEntity, membership => membership.user)
+  memberships: ColocMembershipEntity[];
 }
