@@ -34,11 +34,7 @@ export const registerColoc = async (
     res
       .status(201)
       .json(
-        SuccessHandler.success(
-          "Coloc registered successfully",
-          createdColoc,
-          201
-        )
+        SuccessHandler.created("Coloc registered successfully", createdColoc)
       );
   } catch (error) {
     throw error;
@@ -75,9 +71,7 @@ export const addMember = async (req: Request, res: Response): Promise<void> => {
     await LogHandler.logAction("ADD_MEMBER", userId);
     res
       .status(201)
-      .json(
-        SuccessHandler.success("Member added successfully", membership, 201)
-      );
+      .json(SuccessHandler.created("Member added successfully", membership));
   } catch (error) {
     res
       .status(500)
@@ -97,7 +91,7 @@ export const removeMember = async (
     await LogHandler.logAction("REMOVE_MEMBER", userId);
     res
       .status(204)
-      .json(SuccessHandler.success("Member removed successfully", null, 204));
+      .json(SuccessHandler.noContent("Member removed successfully"));
   } catch (error) {
     res
       .status(500)
@@ -115,7 +109,7 @@ export const deleteColoc = async (
     await LogHandler.logAction("DELETE_COLOC", userId);
     res
       .status(204)
-      .json(SuccessHandler.success("Coloc deleted successfully", null, 204));
+      .json(SuccessHandler.noContent("Coloc deleted successfully"));
   } catch (error) {
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });

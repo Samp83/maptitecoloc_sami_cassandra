@@ -14,12 +14,10 @@ export const registerUser = async (
   res: Response
 ): Promise<void> => {
   try {
-    
     const userToCreateDTO = plainToInstance(UserToCreateDTO, req.body, {
       excludeExtraneousValues: true,
     });
 
-    
     const dtoErrors = await validate(userToCreateDTO);
     if (dtoErrors.length > 0) {
       console.log(dtoErrors);
@@ -34,9 +32,7 @@ export const registerUser = async (
     await LogHandler.logAction("CREATE_USER", user.id.toString());
     res
       .status(201)
-      .json(
-        SuccessHandler.success("User registered successfully", createdUser, 201)
-      );
+      .json(SuccessHandler.created("User registered successfully"));
   } catch (error) {
     throw error;
   }
@@ -120,7 +116,7 @@ export const deleteUser = async (
     await LogHandler.logAction("DELETE_USER", userId.toString());
     res
       //.status(204)
-      .json(SuccessHandler.success("User deleted successfully", 204));
+      .json(SuccessHandler.noContent("User deleted successfully"));
   } catch (error) {
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });
