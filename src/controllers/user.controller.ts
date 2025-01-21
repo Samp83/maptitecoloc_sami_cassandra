@@ -119,8 +119,8 @@ export const deleteUser = async (
     await userService.deleteUser(Number(req.params.id));
     await LogHandler.logAction("DELETE_USER", userId.toString());
     res
-      .status(204)
-      .json(SuccessHandler.success("User deleted successfully", null, 204));
+      //.status(204)
+      .json(SuccessHandler.success("User deleted successfully", 204));
   } catch (error) {
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });
