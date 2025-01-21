@@ -21,8 +21,11 @@ const TaskSchema: Schema = new Schema({
       "REMOVE_MEMBER",
       "UPDATE_COLOC",
       "TRANSFER_OWNERSHIP",
+      "ADD_CHARGE",
+      "REMOVE_CHARGE",
+      "PAY_MEMBER",
     ],
-  }, //voir si + finance
+  },
   assignedTo: { type: String, required: true },
   dueDate: { type: Date, required: true, default: Date.now },
   status: { type: String, enum: ["pending", "completed"], default: "pending" },

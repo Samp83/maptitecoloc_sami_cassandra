@@ -16,4 +16,19 @@ export class SuccessHandler<T> {
   ): SuccessHandler<T> {
     return new SuccessHandler(status, message, data);
   }
+  static created<T>(message: string, data: T | null = null): SuccessHandler<T> {
+    return new SuccessHandler(201, message, data);
+  }
+
+  static noContent(message: string): SuccessHandler<null> {
+    return new SuccessHandler(204, message, null);
+  }
+
+  static custom<T>(
+    status: number,
+    message: string,
+    data: T | null = null
+  ): SuccessHandler<T> {
+    return new SuccessHandler(status, message, data);
+  }
 }
