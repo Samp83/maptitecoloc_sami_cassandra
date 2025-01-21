@@ -1,7 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany } from "typeorm";
+import { Exclude } from "class-transformer";
 import { UserPasswordEntity } from "./user.password.entity";
 import { ColocEntity } from "./coloc.entity";
 import { ColocMembershipEntity } from "./coloc.membership.entity";
+import { FinanceEntity } from "./finance.entity";
 
 @Entity("users")
 export class UserEntity {
@@ -27,6 +29,7 @@ export class UserEntity {
   isAdmin: boolean;
 
   @OneToOne(() => UserPasswordEntity, password => password.user)
+  @Exclude()
   password: UserPasswordEntity;
 
   @OneToMany(() => ColocEntity, coloc => coloc.proprietaire)
@@ -34,4 +37,7 @@ export class UserEntity {
 
   @OneToMany(() => ColocMembershipEntity, membership => membership.user)
   memberships: ColocMembershipEntity[];
+
+  @OneToMany(() => FinanceEntity, finance => finance.user)
+  finances: FinanceEntity[];
 }

@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm";
 import { UserEntity } from "./user.entity";
 import { ColocMembershipEntity } from "./coloc.membership.entity";
+import { FinanceEntity } from "./finance.entity";
 
 @Entity("colocs")
 export class ColocEntity {
@@ -27,4 +28,7 @@ export class ColocEntity {
 
   @OneToMany(() => ColocMembershipEntity, membership => membership.coloc)
   membres: ColocMembershipEntity[];
+
+  @OneToMany(() => FinanceEntity, finance => finance.coloc)
+  finances: FinanceEntity[];
 }
