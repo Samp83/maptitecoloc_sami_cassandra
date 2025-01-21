@@ -35,3 +35,19 @@ export const registerColoc = async (
     throw error;
   }
 };
+
+  export const deleteColoc = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    try {
+      await colocService.deleteColoc(Number(req.params.id));
+      res.status(204).json({ message: "Coloc deleted successfully" });
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(500).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: "An unknown error occurred" });
+      }
+    }
+  };
