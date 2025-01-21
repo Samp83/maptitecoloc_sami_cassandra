@@ -9,5 +9,6 @@ routes.post("/register", authMiddleware, colocController.registerColoc);
 routes.delete("/:id", authMiddleware, colocController.deleteColoc);
 routes.post("/:id/add-member", authMiddleware, colocController.addMember);
 routes.post("/:id/remove-member", authMiddleware, colocController.removeMember);
+routes.get("/:id/",  colocController.getColocMembers);
 
 export default routes;

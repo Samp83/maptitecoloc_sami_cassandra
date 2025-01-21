@@ -31,6 +31,16 @@ export class ColocService {
     return savedColoc;
   }
 
+  async getColocMembers(colocId: number): Promise<UserEntity[]> {
+    const coloc = await this.colocRepository.findById(colocId);
+    if (!coloc) {
+      throw new Error("Coloc not found");
+    }
+
+    const memberships = await this.membershipRepository.find({ where: { coloc: { id: colocId } }, relations: ["user"] });
+    return memberships.map(membership => membership.user);
+  }
+
   async addMember(colocId: number, userId: number, ownerId: number): Promise<ColocMembershipEntity> {
     const coloc = await this.colocRepository.findById(colocId);
     if (!coloc) {

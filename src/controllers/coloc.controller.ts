@@ -34,6 +34,23 @@ export const registerColoc = async (
   }
 };
 
+export const getColocMembers = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const colocId = Number(req.params.id);
+    const members = await colocService.getColocMembers(colocId);
+    res.status(200).json(SuccessHandler.success("Members retrieved successfully", members, 200));
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: "An unknown error occurred" });
+    }
+  }
+};
+
 export const addMember = async (
   req: Request,
   res: Response
